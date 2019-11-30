@@ -1,0 +1,36 @@
+{
+  "name": "sabri/Extractor",
+  "type": "Library",
+  "description": "Extract links from websites",
+  "keywords": [
+    "php",
+    "crawler",
+    "link"
+  ],
+  "homepage": "http://github.com/snuzi",
+  "authors": [
+    {
+      "name": "Sabri Nuzi",
+      "email": "sabrinuzi@gmail.com"
+    }
+  ],
+  "require-dev": {
+    "phpunit/phpunit": "^8",
+    "mockery/mockery": "^1.2"
+  },
+  "require": {
+    "kub-at/php-simple-html-dom-parser": "^1.9",
+    "rakibtg/sleekdb": "^1.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "sabri\\Extractor\\": "src"
+    },
+    "classmap": []
+  },
+  "scripts": {
+    "test": [
+      "phpunit --configuration phpunit.xml"
+    ]
+  }
+}
