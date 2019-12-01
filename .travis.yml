@@ -18,7 +18,6 @@ before_script:
   - npm install -g puppeteer
   - ./Tests/server/start_server.sh
   - sleep 5 # give server some time to start
-  - travis_retry composer self-update
   - travis_retry composer install
 
 script:
