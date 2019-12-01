@@ -18,7 +18,7 @@ $extractor->run();
 Check [/rakibtg/SleekDB](https://github.com/rakibtg/SleekDB) documentation how to make queries
 
 
-### Save links in a different storage
+### Save links to a different storage
 
 There is a build in storage `DBLinkStorage` based on NoSql database [/rakibtg/SleekDB](https://github.com/rakibtg/SleekDB)   for this library but you can implement a different storage by implementing LimkstorageInterface
 
