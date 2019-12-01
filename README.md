@@ -24,14 +24,17 @@ There is a build in storage `DBLinkStorage` based on NoSql database [/rakibtg/Sl
 
 ### Run tests
 
-Install local server dependencies (this step should be performed only once in you local machine):
+#### Install local server dependencies 
+This step should be done only once in you local machine:
 ```
 cd Tests/server/
 npm install
 ```
 
-Run local server
+#### Run local server
+
 `node Tests/server/server.js`
 
-Run tests
+#### Run tests
+
 `vendor/bin/phpunit`
