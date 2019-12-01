@@ -4,6 +4,7 @@ Recursively extract all website inbound links
 `composer install`
 
 ### Run
+
 ```php
 $baseurl = 'https://www.bbc.co.uk/food';
 
@@ -13,11 +14,24 @@ $extractor->run();
 ```
 
 ###Access extracted links
+
 Check [/rakibtg/SleekDB](https://github.com/rakibtg/SleekDB) documentation how to make queries
 
 
 ###Save links in a different storage
+
 There is a build in storage `DBLinkStorage` based on NoSql database [/rakibtg/SleekDB](https://github.com/rakibtg/SleekDB)   for this library but you can implement a different storage by implementing LimkstorageInterface
 
 ###Run tests
-To do..
+
+Install local server dependencies (this step should be performed only once in you local machine):
+```
+cd Tests/server/
+npm install
+```
+
+Run local server
+`node Tests/server/server.js`
+
+Run tests
+`vendor/bin/phpunit`
