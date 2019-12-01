@@ -1,6 +1,6 @@
 <?php
 
-class TestBase
+class TestBase extends \PHPUnit\Framework\TestCase
 {
 
 }
