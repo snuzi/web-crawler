@@ -1,6 +1,6 @@
 {
   "name": "sabri/Extractor",
-  "type": "Library",
+  "type": "library",
   "description": "Extract links from websites",
   "keywords": [
     "php",
