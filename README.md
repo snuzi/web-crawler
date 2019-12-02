@@ -20,7 +20,7 @@ Check [/rakibtg/SleekDB](https://github.com/rakibtg/SleekDB) documentation how t
 
 ### Save links to a different storage
 
-There is a build in storage `DBLinkStorage` based on NoSql database [/rakibtg/SleekDB](https://github.com/rakibtg/SleekDB)   for this library but you can implement a different storage by implementing LimkstorageInterface
+There is a build in storage `DBLinkStorage` based on NoSql database [/rakibtg/SleekDB](https://github.com/rakibtg/SleekDB)   for this library but you can implement a different storage by implementing `LinkStorageInterface`
 
 ### Run tests
 
