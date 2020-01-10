@@ -9,7 +9,7 @@ class LinkExtractorTest extends TestCase
 {
     public function testShouldCrawlInboundLinks()
     {
-        $baseurl = ' http://localhost:8080';
+        $baseurl = 'http://localhost:8080';
 
         $linkStorage = new DBLinkStorage(__DIR__ . '/../resources/database');
         $extractor = new LinkExtractor($baseurl, $linkStorage);
