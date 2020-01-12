@@ -24,7 +24,14 @@ class LinkExtractor
     public function setBaseUrl(string $baseUrl): void
     {
         $this->baseUrl = $baseUrl;
-        $this->setUrlPath(parse_url($baseUrl, PHP_URL_PATH));
+        $baseUrl = parse_url($baseUrl, PHP_URL_PATH);
+
+        $port =  parse_url($baseUrl, PHP_URL_PORT);
+        if ($port) {
+            $baseUrl .= ':' . $port;
+        }
+
+        $this->setUrlPath($baseUrl);
     }
 
     /**
@@ -94,7 +101,9 @@ class LinkExtractor
         if (substr($href, 0, 4) === "http") {
             return $href;
         } elseif (substr($href, 0, 1) === "/") {
-            return $this->getHostUrl($this->baseUrl) . $href;
+            $urlProtocol = parse_url($this->baseUrl, PHP_URL_SCHEME);
+
+            return $urlProtocol . '://' . $this->getHostUrl($this->baseUrl) . $href;
         }
 
         return $baseUrl . $href;
@@ -131,7 +140,7 @@ class LinkExtractor
     {
         $baseHostName = $this->getHostUrl($this->baseUrl, true);
 
-        if (strpos($url, $baseHostName)) {
+        if (strpos($url, $baseHostName) !== -1 ) {
             return true;
         }
 
