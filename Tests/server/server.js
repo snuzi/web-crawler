@@ -7,7 +7,7 @@ app.get('/', function (request, response) {
 });
 
 app.get('/link1', function (request, response) {
-    response.end('<body><p>Page link1</p> <a href="/link3">Link3</a> <a href="/link4">Link4</a></body>');
+    response.end('<body><p>Page link1</p> <a href="/link3">Link3</a> <a href="/link2.2">Link2</a></body>');
 });
 
 app.get('/link2', function (request, response) {

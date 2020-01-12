@@ -102,8 +102,15 @@ class LinkExtractor
             return $href;
         } elseif (substr($href, 0, 1) === "/") {
             $urlProtocol = parse_url($this->baseUrl, PHP_URL_SCHEME);
+            $urlPort = parse_url($this->baseUrl, PHP_URL_PORT);
 
-            return $urlProtocol . '://' . $this->getHostUrl($this->baseUrl) . $href;
+            $fullUrl = $urlProtocol . '://' . $this->getHostUrl($this->baseUrl);
+
+            if ($urlPort) {
+                $fullUrl .= ':' . $urlPort;
+            }
+
+            return $fullUrl . $href;
         }
 
         return $baseUrl . $href;
