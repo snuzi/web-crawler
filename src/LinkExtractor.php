@@ -10,7 +10,6 @@ class LinkExtractor
     const RESOURCES_DIR = __DIR__ . '/../resources/';
 
     private $baseUrl;
-    private $urlPath = '';
     private $maxDepth = 10;
     private $visitedPages = [];
     private $linkSaver;
@@ -118,7 +117,6 @@ class LinkExtractor
     {
         $fileName = $this->getResourceFileName();
         file_put_contents($fileName, $link . PHP_EOL, FILE_APPEND);
-
     }
 
     private function getResourceFileName(): string
