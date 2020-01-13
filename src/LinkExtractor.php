@@ -15,35 +15,14 @@ class LinkExtractor
     private $visitedPages = [];
     private $linkSaver;
 
+    /** @var Url */
+    private $url;
+
     public function __construct(string $baseUrl, LinkStorageInterface $linkSaver)
     {
         $this->linkSaver = $linkSaver;
         $this->baseUrl = $baseUrl;
-    }
-
-    public function setBaseUrl(string $baseUrl): void
-    {
-        $this->baseUrl = $baseUrl;
-        $baseUrl = parse_url($baseUrl, PHP_URL_PATH);
-
-        $port =  parse_url($baseUrl, PHP_URL_PORT);
-        if ($port) {
-            $baseUrl .= ':' . $port;
-        }
-
-        $this->setUrlPath($baseUrl);
-    }
-
-    /**
-     * Set $pathUrl if you want to sctract all links from subpages
-     * eg. https://example.com/news
-     * All the pages under news will be checked and links saved
-     *
-     * @param string $pathUrl
-     */
-    private function setUrlPath(string $pathUrl): void
-    {
-        $this->urlPath = $pathUrl;
+        $this->url = new Url($baseUrl);
     }
 
     public function setMaxDepth(int $maxDepth): void
@@ -73,10 +52,10 @@ class LinkExtractor
                         continue;
                     }
 
-                    $link = $this->getFullLink($element->href, $link);
+                    $link = $this->url->getFullLink($element->href, $link);
 
                     if ($this->shouldCrawlPage($element->href)) {
-                        if (!$this->isInboundLink($link)) {
+                        if (!$this->url->isInboundLink($link)) {
                             continue;
                         }
 
@@ -94,26 +73,6 @@ class LinkExtractor
                 return;
             }
         }
-    }
-
-    private function getFullLink(string $href, string $baseUrl): string
-    {
-        if (substr($href, 0, 4) === "http") {
-            return $href;
-        } elseif (substr($href, 0, 1) === "/") {
-            $urlProtocol = parse_url($this->baseUrl, PHP_URL_SCHEME);
-            $urlPort = parse_url($this->baseUrl, PHP_URL_PORT);
-
-            $fullUrl = $urlProtocol . '://' . $this->getHostUrl($this->baseUrl);
-
-            if ($urlPort) {
-                $fullUrl .= ':' . $urlPort;
-            }
-
-            return $fullUrl . $href;
-        }
-
-        return $baseUrl . $href;
     }
 
     private function isLinkCrawlable(string $link): bool
@@ -141,17 +100,6 @@ class LinkExtractor
     private function isPageVisited(string $url): bool
     {
         return in_array($url, $this->visitedPages);
-    }
-
-    private function isInboundLink(string $url): bool
-    {
-        $baseHostName = $this->getHostUrl($this->baseUrl, true);
-
-        if (strpos($url, $baseHostName) !== -1 ) {
-            return true;
-        }
-
-        return false;
     }
 
     private function getHostUrl($url, $includePathUrl = false)
