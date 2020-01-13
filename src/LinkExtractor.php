@@ -102,16 +102,6 @@ class LinkExtractor
         return in_array($url, $this->visitedPages);
     }
 
-    private function getHostUrl($url, $includePathUrl = false)
-    {
-        $hostname = parse_url($url, PHP_URL_HOST);
-        if ($includePathUrl) {
-            $hostname .= $this->urlPath;
-        }
-
-        return $hostname;
-    }
-
     private function isLinkExtracted($url): bool
     {
         return $this->linkSaver->isLinkExtracted($url);
@@ -119,7 +109,7 @@ class LinkExtractor
 
     private function saveLink($link): void
     {
-        $this->linkSaver->saveLink($link, $this->getHostUrl($link));
+        $this->linkSaver->saveLink($link, $this->url->getHostname());
 
         $this->saveLinkToFile($link);
     }
@@ -133,7 +123,7 @@ class LinkExtractor
 
     private function getResourceFileName(): string
     {
-        return self::RESOURCES_DIR . $this->getHostUrl($this->baseUrl) . '.txt';
+        return self::RESOURCES_DIR . $this->url->getHostname() . '.txt';
     }
 
     private function removeResource(): void

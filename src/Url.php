@@ -46,6 +46,7 @@ class Url
             if (substr($this->domain, -1) !== '/') {
                 $slashAtTheEnd = '/';
             }
+
             return $this->domain . $slashAtTheEnd . $href;
         }
 

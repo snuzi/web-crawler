@@ -94,5 +94,4 @@ class UrlTest extends TestCase
 
         $this->assertEquals($expectedResult, $isInboundLink);
     }
-
 }
