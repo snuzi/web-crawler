@@ -1,6 +1,6 @@
 <?php
 
-namespace sabri\Extractor;
+namespace Sabri\Extractor;
 
 use Exception;
 use KubAT\PhpSimple\HtmlDomParser;
@@ -10,33 +10,18 @@ class LinkExtractor
     const RESOURCES_DIR = __DIR__ . '/../resources/';
 
     private $baseUrl;
-    private $urlPath = '';
     private $maxDepth = 10;
     private $visitedPages = [];
     private $linkSaver;
+
+    /** @var Url */
+    private $url;
 
     public function __construct(string $baseUrl, LinkStorageInterface $linkSaver)
     {
         $this->linkSaver = $linkSaver;
         $this->baseUrl = $baseUrl;
-    }
-
-    public function setBaseUrl(string $baseUrl): void
-    {
-        $this->baseUrl = $baseUrl;
-        $this->setUrlPath(parse_url($baseUrl, PHP_URL_PATH));
-    }
-
-    /**
-     * Set $pathUrl if you want to sctract all links from subpages
-     * eg. https://example.com/news
-     * All the pages under news will be checked and links saved
-     *
-     * @param string $pathUrl
-     */
-    private function setUrlPath(string $pathUrl): void
-    {
-        $this->urlPath = $pathUrl;
+        $this->url = new Url($baseUrl);
     }
 
     public function setMaxDepth(int $maxDepth): void
@@ -66,10 +51,10 @@ class LinkExtractor
                         continue;
                     }
 
-                    $link = $this->getFullLink($element->href, $link);
+                    $link = $this->url->getFullLink($element->href, $link);
 
                     if ($this->shouldCrawlPage($element->href)) {
-                        if (!$this->isInboundLink($link)) {
+                        if (!$this->url->isInboundLink($link)) {
                             continue;
                         }
 
@@ -87,17 +72,6 @@ class LinkExtractor
                 return;
             }
         }
-    }
-
-    private function getFullLink(string $href, string $baseUrl): string
-    {
-        if (substr($href, 0, 4) === "http") {
-            return $href;
-        } elseif (substr($href, 0, 1) === "/") {
-            return $this->getHostUrl($this->baseUrl) . $href;
-        }
-
-        return $baseUrl . $href;
     }
 
     private function isLinkCrawlable(string $link): bool
@@ -127,27 +101,6 @@ class LinkExtractor
         return in_array($url, $this->visitedPages);
     }
 
-    private function isInboundLink(string $url): bool
-    {
-        $baseHostName = $this->getHostUrl($this->baseUrl, true);
-
-        if (strpos($url, $baseHostName)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private function getHostUrl($url, $includePathUrl = false)
-    {
-        $hostname = parse_url($url, PHP_URL_HOST);
-        if ($includePathUrl) {
-            $hostname .= $this->urlPath;
-        }
-
-        return $hostname;
-    }
-
     private function isLinkExtracted($url): bool
     {
         return $this->linkSaver->isLinkExtracted($url);
@@ -155,7 +108,7 @@ class LinkExtractor
 
     private function saveLink($link): void
     {
-        $this->linkSaver->saveLink($link, $this->getHostUrl($link));
+        $this->linkSaver->saveLink($link, $this->url->getHostname());
 
         $this->saveLinkToFile($link);
     }
@@ -164,12 +117,11 @@ class LinkExtractor
     {
         $fileName = $this->getResourceFileName();
         file_put_contents($fileName, $link . PHP_EOL, FILE_APPEND);
-
     }
 
     private function getResourceFileName(): string
     {
-        return self::RESOURCES_DIR . $this->getHostUrl($this->baseUrl) . '.txt';
+        return self::RESOURCES_DIR . $this->url->getHostname() . '.txt';
     }
 
     private function removeResource(): void

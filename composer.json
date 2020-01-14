@@ -1,7 +1,7 @@
 {
-  "name": "sabri/Extractor",
+  "name": "sabri/extractor",
   "type": "library",
-  "description": "Extract links from websites",
+  "description": "Extract all inbound links from a website",
   "keywords": [
     "php",
     "crawler",
@@ -24,7 +24,7 @@
   },
   "autoload": {
     "psr-4": {
-      "sabri\\Extractor\\": "src"
+      "Sabri\\Extractor\\": "src"
     },
     "classmap": []
   },
