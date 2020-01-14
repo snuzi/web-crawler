@@ -1,10 +1,10 @@
 <?php
-namespace sabri\Extractor\Tests;
+namespace Sabri\Extractor\Tests;
 
 use PHPUnit\Framework\TestCase;
-use sabri\Extractor\db\Link;
-use sabri\Extractor\DBLinkStorage;
-use sabri\Extractor\LinkExtractor;
+use Sabri\Extractor\db\Link;
+use Sabri\Extractor\DBLinkStorage;
+use Sabri\Extractor\LinkExtractor;
 
 class LinkExtractorTest extends TestCase
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace sabri\Extractor\Tests;
+namespace Sabri\Extractor\Tests;
 
 use PHPUnit\Framework\TestCase;
 use sabri\Extractor\Url;

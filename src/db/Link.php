@@ -1,6 +1,6 @@
 <?php
 
-namespace sabri\Extractor\db;
+namespace Sabri\Extractor\db;
 
 use SleekDB\SleekDB;
 

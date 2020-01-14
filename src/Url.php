@@ -1,6 +1,6 @@
 <?php
 
-namespace sabri\Extractor;
+namespace Sabri\Extractor;
 
 class Url
 {

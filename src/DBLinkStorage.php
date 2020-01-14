@@ -1,8 +1,8 @@
 <?php
 
-namespace sabri\Extractor;
+namespace Sabri\Extractor;
 
-use sabri\Extractor\db\Link;
+use Sabri\Extractor\db\Link;
 
 class DBLinkStorage implements LinkStorageInterface
 {
