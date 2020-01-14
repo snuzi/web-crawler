@@ -2,8 +2,8 @@
 
 include __DIR__ . '/vendor/autoload.php';
 
-use sabri\Extractor\DBLinkStorage;
-use sabri\Extractor\LinkExtractor;
+use Sabri\Extractor\DBLinkStorage;
+use Sabri\Extractor\LinkExtractor;
 
 $baseurl = 'https://www.bbc.co.uk/food';
 
