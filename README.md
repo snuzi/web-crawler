@@ -27,13 +27,13 @@ There is a build in storage `DBLinkStorage` based on NoSql database [/rakibtg/Sl
 #### Install local server dependencies 
 This step should be done only once in you local machine:
 ```
-cd Tests/server/
+cd tests/server/
 npm install
 ```
 
 #### Run local server
 
-`node Tests/server/server.js`
+`node tests/server/server.js`
 
 #### Run tests
 
