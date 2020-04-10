@@ -15,7 +15,7 @@ app.get('/link2', function (request, response) {
 });
 
 app.get('/link3', function (request, response) {
-    response.end('<body><p>Page link3</p> <a href="#">Self reference</a> <a href="/link4">Link4</a></body>');
+    response.end('<body><p>Page link3</p> <a href="#not-allowed">Self reference</a>  <a href="?question-mark">No allow ?</a> <a href="/link4">Link4</a></body>');
 });
 
 app.get('/link4', function (request, response) {

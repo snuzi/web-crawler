@@ -19,8 +19,8 @@
     "mockery/mockery": "^1.2"
   },
   "require": {
-    "kub-at/php-simple-html-dom-parser": "^1.9",
-    "rakibtg/sleekdb": "^1.5"
+    "rakibtg/sleekdb": "^1.5",
+    "fabpot/goutte": "^4.0"
   },
   "autoload": {
     "psr-4": {
