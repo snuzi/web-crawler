@@ -85,12 +85,11 @@ class LinkExtractor
     private function isLinkCrawlable(string $link): bool
     {
         $linkStartsWith = substr($link, 0, 1);
-        $containsHashCharacter = strpos($link, '#') !== false;
-
+        $containsChars = preg_match('/\?|#/', $link);
         if (
             in_array($link, ['../', '/' , './']) ||
             in_array($linkStartsWith, ['#', '?']) ||
-            $containsHashCharacter
+            $containsChars
         ) {
             return false;
         }
