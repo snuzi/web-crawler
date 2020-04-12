@@ -1,4 +1,5 @@
 <?php
+
 namespace Sabri\Extractor\Tests;
 
 use PHPUnit\Framework\TestCase;
@@ -8,10 +9,9 @@ use Sabri\Extractor\LinkExtractor;
 
 class LinkExtractorTest extends TestCase
 {
+    public $databaseDir = __DIR__ . '/../resources/database-test';
     /** @var SleekDB */
     private $store;
-
-    public $databaseDir = __DIR__ . '/../resources/database-test';
 
     public function setUp(): void
     {
@@ -27,14 +27,31 @@ class LinkExtractorTest extends TestCase
 
     public function testShouldCrawlInboundLinks()
     {
-        $baseurl = 'http://localhost:8080';
+        $baseUrl = 'http://localhost:8080';
+
+        $linksThatShouldExist = [
+            'http://localhost:8080/link1',
+            'http://localhost:8080/link3',
+            'http://localhost:8080/link4',
+            'http://localhost:8080/',
+            'http://localhost:8080/link5',
+            'http://localhost:8080/link6',
+            'http://localhost:8080/link2.2'
+        ];
 
         $linkStorage = new DBLinkStorage($this->databaseDir);
-        $extractor = new LinkExtractor($baseurl, $linkStorage);
+        $extractor = new LinkExtractor($baseUrl, $linkStorage);
         $extractor->run();
 
-        $links = $this->store->fetch();
+        $extractedLinks = $this->store->fetch();
 
-        $this->assertCount(5, $links);
+        foreach ($extractedLinks as $link) {
+            $this->assertContains(
+                $link['link'],
+                $linksThatShouldExist
+            );
+        }
+
+        $this->assertCount(count($linksThatShouldExist), $extractedLinks);
     }
 }

@@ -4,6 +4,9 @@ namespace Sabri\Extractor;
 
 use Exception;
 use KubAT\PhpSimple\HtmlDomParser;
+use Goutte\Client;
+use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpClient\HttpClient;
 
 class LinkExtractor
 {
@@ -13,6 +16,7 @@ class LinkExtractor
     private $maxDepth = 10;
     private $visitedPages = [];
     private $linkSaver;
+    private $crawler;
 
     /** @var Url */
     private $url;
@@ -22,6 +26,7 @@ class LinkExtractor
         $this->linkSaver = $linkSaver;
         $this->baseUrl = $baseUrl;
         $this->url = new Url($baseUrl);
+        $this->client = new Client(HttpClient::create(['timeout' => 60]));
     }
 
     public function setMaxDepth(int $maxDepth): void
@@ -34,42 +39,45 @@ class LinkExtractor
         if (!$this->baseUrl || !filter_var($this->baseUrl, FILTER_VALIDATE_URL)) {
             throw new Exception('Please provide a valid URL');
         }
-        $this->removeResource();
+
         $this->extractLinks($this->baseUrl, 1, $this->maxDepth);
     }
 
     private function extractLinks(string $link, int $depth, int $maxDepth): void
     {
-        $dom = @HtmlDomParser::file_get_html($link);
+        $crawler = $this->client->request('GET', $link);
+
         $this->visitedPages[] = $link;
-        if ($dom) {
-            $foundLinks = $dom->find('body a');
 
-            if ($depth <= $this->maxDepth) {
-                foreach ($foundLinks as $element) {
-                    if (!$this->isLinkCrawlable($element->href)) {
-                        continue;
-                    }
+        $pageLinks = array_filter($crawler->filter('body a')->each(
+        /**
+         * @param Crawler $node
+         * @return string|null
+         */
+            function (Crawler $node) {
+                return $node->link()->getUri();
+            }
+        ));
 
-                    $link = $this->url->getFullLink($element->href, $link);
+        foreach ($pageLinks as $href) {
+            if (!$this->isLinkCrawlable($href)) {
+                continue;
+            }
+            $link = $this->url->getFullLink($href, $link);
 
-                    if ($this->shouldCrawlPage($element->href)) {
-                        if (!$this->url->isInboundLink($link)) {
-                            continue;
-                        }
-
-                        if (!$this->isLinkExtracted($link)) {
-                            $this->saveLink($link);
-                        }
-
-                        if (!$this->isPageVisited($link)) {
-                            $this->extractLinks($link, $depth + 1, $maxDepth);
-                        }
-                    }
+            if ($this->shouldCrawlPage($href)) {
+                if (!$this->url->isInboundLink($link)) {
+                    continue;
                 }
-                unset($element);
-            } else {
-                return;
+
+                if (!$this->isLinkExtracted($link)) {
+                    echo  $link . " saved \n";
+                    $this->saveLink($link);
+                }
+
+                if (!$this->isPageVisited($link)) {
+                    $this->extractLinks($link, $depth + 1, $maxDepth);
+                }
             }
         }
     }
@@ -77,9 +85,11 @@ class LinkExtractor
     private function isLinkCrawlable(string $link): bool
     {
         $linkStartsWith = substr($link, 0, 1);
+        $containsChars = preg_match('/\?|#/', $link);
         if (
             in_array($link, ['../', '/' , './']) ||
-            in_array($linkStartsWith, ['#', '?'])
+            in_array($linkStartsWith, ['#', '?']) ||
+            $containsChars
         ) {
             return false;
         }
@@ -109,25 +119,5 @@ class LinkExtractor
     private function saveLink($link): void
     {
         $this->linkSaver->saveLink($link, $this->url->getHostname());
-
-        $this->saveLinkToFile($link);
-    }
-
-    private function saveLinkToFile(string $link)
-    {
-        $fileName = $this->getResourceFileName();
-        file_put_contents($fileName, $link . PHP_EOL, FILE_APPEND);
-    }
-
-    private function getResourceFileName(): string
-    {
-        return self::RESOURCES_DIR . $this->url->getHostname() . '.txt';
-    }
-
-    private function removeResource(): void
-    {
-        if (file_exists($this->getResourceFileName())) {
-            unlink($this->getResourceFileName());
-        }
     }
 }
